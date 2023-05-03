@@ -1,65 +1,19 @@
-import React from "react";
+import React,  { useState }  from "react";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import * as C from "./styles";
-import $ from 'jquery';
 import jQuery from 'jquery';
+var $ = require( "jquery" );
 
 function showLetra (data,art,mus,arrayid) {
   if (! arrayid) arrayid = 0;
 
   if (data.type === 'exact' || data.type === 'aprox') {
     // Print lyrics text
-    $('#letra .text').val(data.mus[arrayid].text);
-
-    // Show buttons to open original and portuguese translation
-    if (data.mus[arrayid].translate) {
-      $('#letra .text').prepend('<input type=button value="Portuguese &raquo;" onClick="$(document).trigger(\'translate\')"><br/>');
-      $(document).one('translate',function() {
-        $('#letra .text').text(data.mus[arrayid].translate[0].text);
-        $('#letra .text').prepend('<input type=button value="&laquo; Original" onClick="$(document).trigger(\'original\')"><br/>');
-        $(document).one('original',function() {
-          showLetra(data,art,mus,arrayid);
-        });
-      });
-    }
-
-    // If not exact match (ex: U2 / Beautiful)
-    if (data.type === 'aprox' && !$('#aprox').is('div')) {
-      $('#letra').prepend('<div id=aprox>We found something similar<br/><span class=songname>"' + data.mus[arrayid].name + '"</span></div>');
-
-      // If Vagalume found more than one possible matches
-      if (data.mus.length > 0) {
-        var html = '<select class=songselect>';
-        for (var i = 0; i < data.mus.length; i++) {
-          html += '<option value="'+i+'"'+(i===arrayid?' selected':'')+'>'+data.mus[i].name+'</option>';
-        }
-        html += '</select>';
-        $('#aprox span.songname').html(html);
-        $('#aprox select.songselect').change(function() {
-          var aID = $('option:selected',this).val();
-          showLetra (data,art,mus,aID);
-        });
-      }
-    }
-  } else if (data.type === 'song_notfound') {
-    // Song not found, but artist was found
-    // You can list all songs from Vagalume here
-    $('#letra .text').html(
-      'Song "'+mus+'" from "'+art+'" was not found.<br/>'
-      +'<a target=_blank href="http://www.vagalume.com.br/add/lyrics.php">'
-      +'Add this song to Vagalume &raquo;</a>'
-    );
-  } else {
-    // Artist not found
-    $('#letra .text').html(
-      'Song "'+mus+'" from "'+art+'" was not found<br/>'
-      +'(artist not found)<br/>'
-      +'<a target=_blank href="http://www.vagalume.com.br/add/lyrics.php">'
-      +'Add this song to Vagalume &raquo;</a>'
-    );
+    $('#letra #textLetra').text(data.mus[arrayid].text);
+    
   }
 }
 function fetchLetra (art,mus) {
@@ -86,8 +40,8 @@ function fetchLetra (art,mus) {
 }
 
 // Just an example of how you can call this using elements on the page
-function reload(){
-  fetchLetra($("#artista").val(),$("#music").val());
+function reload(artista, musica, letra){
+  fetchLetra(artista,musica);
 }
 
 
@@ -96,13 +50,16 @@ const Home = () => {
   const { signout } = useAuth();
   const navigate = useNavigate();
 
+  const [artista, setArtista] = useState("");
+  const [musica, setMusica] = useState("");
+  const [error, setError] = useState("");
+  var letra;
+
   const containerStyle = {
     display: "flex",
     flexDirection: "column",
     height: "100vh",
     backgroundColor: "#F9C80E", // amarelo
-    backgroundImage:
-      "url('https://png.pngtree.com/element_our/20190522/ourlarge/pngtree-bee-cartoon-image_1076773.jpg')",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
     backgroundSize: "20%",
@@ -144,13 +101,16 @@ const Home = () => {
             type="Text"
             placeholder="Artista"
             value={artista}
+            onChange={(e) => [setArtista(e.target.value), setError("")]}
           />
           <Input
             type="Text"
             placeholder="Musica"
-            value={music}
+            value={musica}
+            onChange={(e) => [setMusica(e.target.value), setError("")]}
           />
-          <Button Text="Reload" onClick={() => [reload()]}></Button>
+          <Button Text="Reload" onClick={() => [reload(artista, musica)]}></Button>
+          
           <C.LabelSignin>
             Não está logado?
             <C.Strong>
@@ -159,6 +119,10 @@ const Home = () => {
           </C.LabelSignin>
           <Button Text="Sair" onClick={() => [signout(), navigate("/")]} />
         </C.Container>
+
+        <div id='letra'>
+          <pre id='textLetra'>Fetching lyrics... </pre>
+        </div>
       </main>
     </div>
   );
