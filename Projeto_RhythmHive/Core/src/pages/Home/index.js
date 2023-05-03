@@ -60,6 +60,8 @@ const Home = () => {
     flexDirection: "column",
     height: "100vh",
     backgroundColor: "#F9C80E", // amarelo
+    backgroundImage:
+      "url('https://png.pngtree.com/element_our/20190522/ourlarge/pngtree-bee-cartoon-image_1076773.jpg')",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
     backgroundSize: "20%",
@@ -74,23 +76,17 @@ const Home = () => {
 
   const logoStyle = {
     display: "flex",
-    alignItems: "center",
+    alignItems: "top",
   };
 
   const titleStyle = {
     marginLeft: "10px",
   };
 
-  const beeIconStyle = {
-    fontSize: "40px",
-    color: "black",
-  };
-
   return (
     <div style={containerStyle}>
       <header style={headerStyle}>
         <div style={logoStyle}>
-          <i className="fas fa-bee" style={beeIconStyle}></i>
           <h1 style={titleStyle}>RhythmHive</h1>
         </div>
       </header>
