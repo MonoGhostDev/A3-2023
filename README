@@ -1,1 +1,8 @@
+Instrução para inicialização do projeto:
+1 - possuir npm instalado.
+2 - Utilizar o comando "npm install yarn"
+3 - utilizar o comando "cd" para entrar no caminho 'A3-2023/Projeto_RhythmHive/Core/" dentro do terminal
+4 - digitar no terminal o comando "yarn start"
+5 - será aberto uma pagina no navegador contendo o projeto rodando.
+
 link para a apresentação do projeto no youtube:.
