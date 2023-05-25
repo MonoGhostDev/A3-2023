@@ -4,10 +4,15 @@ import Button from "../../components/Button";
 import * as C from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import BackgroundImage from "./BackgroundBee.png";
+
+const labelStyle = {
+  color: "white",
+};
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [emailConf, setEmailConf] = useState("");
+  const [user, setUser] = useState("");
+  const [userConf, setuserConf] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -15,57 +20,70 @@ const Signup = () => {
   const { signup } = useAuth();
 
   const handleSignup = () => {
-    if (!email | !emailConf | !senha) {
+    if (!user || !userConf || !senha) {
       setError("Preencha todos os campos");
       return;
-    } else if (email !== emailConf) {
+    } else if (user !== userConf) {
       setError("Os e-mails não são iguais");
       return;
     }
 
-    const res = signup(email, senha);
+    const res = signup(user, senha);
 
     if (res) {
       setError(res);
       return;
     }
 
-    alert("Usuário cadatrado com sucesso!");
+    alert("Usuário cadastrado com sucesso!");
     navigate("/");
   };
 
+  const containerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "100vh",
+    background: `linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), url(${BackgroundImage})`,
+    backgroundSize: "contain",
+    backgroundPosition: "center",
+  };
+
   return (
-    <C.Container>
-      <C.Label>CADASTRO</C.Label>
-      <C.Content>
-        <Input
-          type="email"
-          placeholder="Digite seu E-mail"
-          value={email}
-          onChange={(e) => [setEmail(e.target.value), setError("")]}
-        />
-        <Input
-          type="email"
-          placeholder="Confirme seu E-mail"
-          value={emailConf}
-          onChange={(e) => [setEmailConf(e.target.value), setError("")]}
-        />
-        <Input
-          type="password"
-          placeholder="Digite sua Senha"
-          value={senha}
-          onChange={(e) => [setSenha(e.target.value), setError("")]}
-        />
-        <C.labelError>{error}</C.labelError>
-        <Button Text="Inscrever-se" onClick={handleSignup} />
-        <C.LabelSignin>
-          Já tem uma conta?
-          <C.Strong>
-            <Link to="/">&nbsp;Entre</Link>
-          </C.Strong>
-        </C.LabelSignin>
-      </C.Content>
-    </C.Container>
+    <div style={containerStyle}>
+      <C.Container>
+        <C.Label style={labelStyle}>CADASTRO</C.Label>
+        <C.Content>
+          <Input
+            type="user"
+            placeholder="Digite seu nome de usuário"
+            value={user}
+            onChange={(e) => [setUser(e.target.value), setError("")]}
+          />
+          <Input
+            type="user"
+            placeholder="Confirme seu nome de usuário"
+            value={userConf}
+            onChange={(e) => [setuserConf(e.target.value), setError("")]}
+          />
+          <Input
+            type="password"
+            placeholder="Digite sua Senha"
+            value={senha}
+            onChange={(e) => [setSenha(e.target.value), setError("")]}
+          />
+          <C.labelError>{error}</C.labelError>
+          <Button Text="Inscrever-se" onClick={handleSignup} />
+          <C.LabelSignin>
+            Já tem uma conta?
+            <C.Strong>
+              <Link to="/signin">&nbsp;Entre</Link>
+            </C.Strong>
+          </C.LabelSignin>
+        </C.Content>
+      </C.Container>
+    </div>
   );
 };
 

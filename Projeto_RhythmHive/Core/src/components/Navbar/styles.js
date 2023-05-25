@@ -87,18 +87,19 @@ export const NavbarExtendedContainer = styled.div`
   }
 `;
 
+//não alterar
 export const Button = styled.button`
-  padding: 16px 70px;
+  padding: 0px 0px;
   outline: none;
   border: none;
-  border-radius: 5px;
-  width: 100%;
+  border-radius: 0px;
+  width: 0%;
   cursor: pointer;
-  background-color: #046ee5;
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
-  max-width: 100px;
+  background-color: #00000;
+  color: black;
+  font-weight: 1;
+  font-size: 1px;
+  max-width: 1px;
   
   }
 `;

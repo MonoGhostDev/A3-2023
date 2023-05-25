@@ -1,50 +1,53 @@
-import React,  { useState }  from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import * as C from "./styles";
-import jQuery from 'jquery';
-var $ = require( "jquery" );
+import jQuery from "jquery";
+var $ = require("jquery");
 
-function showLetra (data,art,mus,arrayid) {
-  if (! arrayid) arrayid = 0;
+function showLetra(data, art, mus, arrayid) {
+  if (!arrayid) arrayid = 0;
 
-  if (data.type === 'exact' || data.type === 'aprox') {
-    // Print lyrics text
-    $('#letra #textLetra').text(data.mus[arrayid].text);
-    
+  let letraText = "";
+
+  if (data.type === "exact" || data.type === "aprox") {
+    if (data.mus[arrayid].text && data.mus[arrayid].text.trim() !== "") {
+      letraText = data.mus[arrayid].text;
+    } else {
+      letraText = "Música não encontrada no banco de dados do vagalume.com.br";
+    }
+  } else {
+    letraText = "Música não encontrada no banco de dados do vagalume.com.br";
   }
+
+  return letraText;
 }
-function fetchLetra (art,mus) {
-  var data = jQuery.data(document,art + mus); // cache read
+
+function fetchLetra(art, mus, setLetra) {
+  var data = jQuery.data(document, art + mus);
   if (data) {
-    showLetra(data, art, mus);
+    setLetra(showLetra(data, art, mus));
     return true;
   }
 
-  var url = "http://api.vagalume.com.br/search.php"
-    +"?art="+encodeURIComponent(art)
-    +"&mus="+encodeURIComponent(mus);
+  var url =
+    "http://api.vagalume.com.br/search.php" +
+    "?art=" +
+    encodeURIComponent(art) +
+    "&mus=" +
+    encodeURIComponent(mus);
 
-  // Check if browser supports CORS - http://www.w3.org/TR/cors/
   if (!jQuery.support.cors) {
     url += "&callback=?";
   }
 
-  jQuery.getJSON(url,function(data) {
-    // What we do with the data
-    jQuery.data(document,art + mus,data); // cache write
-    showLetra(data, art, mus);
+  jQuery.getJSON(url, function (data) {
+    jQuery.data(document, art + mus, data);
+    setLetra(showLetra(data, art, mus));
   });
 }
-
-// Just an example of how you can call this using elements on the page
-function reload(artista, musica, letra){
-  fetchLetra(artista,musica);
-}
-
-
 
 const Home = () => {
   const { signout } = useAuth();
@@ -53,15 +56,13 @@ const Home = () => {
   const [artista, setArtista] = useState("");
   const [musica, setMusica] = useState("");
   const [error, setError] = useState("");
-  var letra;
+  const [letra, setLetra] = useState("A letra vai aparecer aqui!");
 
   const containerStyle = {
     display: "flex",
     flexDirection: "column",
     height: "100vh",
-    backgroundColor: "#F9C80E", // amarelo
-    backgroundImage:
-      "url('https://png.pngtree.com/element_our/20190522/ourlarge/pngtree-bee-cartoon-image_1076773.jpg')",
+    backgroundColor: "#F9C80E83",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
     backgroundSize: "20%",
@@ -83,6 +84,23 @@ const Home = () => {
     marginLeft: "10px",
   };
 
+  const inputStyle = {
+    width: "200px",
+  };
+  const letraStyle = {
+    fontSize: "21px",
+    textAlign: "center",
+    marginTop: "-75px",
+  };
+
+  function reload(artista, musica) {
+    fetchLetra(artista, musica, setLetra);
+  }
+
+  useEffect(() => {
+    $("#letra #textLetra").text(letra);
+  }, [letra]);
+
   return (
     <div style={containerStyle}>
       <header style={headerStyle}>
@@ -92,32 +110,49 @@ const Home = () => {
       </header>
       <main>
         <C.Container>
-          <C.Title>Home</C.Title>
-          <Input
-            type="Text"
+          <C.Title>Buscador de músicas</C.Title>
+          <input
+            type="text"
             placeholder="Artista"
             value={artista}
+            style={{
+              width: "750px",
+              height: "50px",
+              fontSize: "22px",
+              borderRadius: "10px",
+            }}
             onChange={(e) => [setArtista(e.target.value), setError("")]}
           />
-          <Input
-            type="Text"
-            placeholder="Musica"
+          <input
+            type="text"
+            placeholder="Nome da música"
             value={musica}
+            style={{
+              width: "750px",
+              height: "50px",
+              fontSize: "22px",
+              borderRadius: "10px",
+            }}
             onChange={(e) => [setMusica(e.target.value), setError("")]}
           />
-          <Button Text="Reload" onClick={() => [reload(artista, musica)]}></Button>
-          
+          <Button Text="Buscar" onClick={() => reload(artista, musica)} />
+
           <C.LabelSignin>
-            Não está logado?
-            <C.Strong>
-              <Link to="/signin">&nbsp;Login</Link>
-            </C.Strong>
+            <C.Strong></C.Strong>
           </C.LabelSignin>
-          <Button Text="Sair" onClick={() => [signout(), navigate("/")]} />
+          <Button
+            Text="Sair"
+            onClick={() => {
+              signout();
+              navigate("/");
+            }}
+          />
         </C.Container>
 
-        <div id='letra'>
-          <pre id='textLetra'>Fetching lyrics... </pre>
+        <div id="letra">
+          <pre id="textLetra" style={letraStyle}>
+            {letra}
+          </pre>
         </div>
       </main>
     </div>

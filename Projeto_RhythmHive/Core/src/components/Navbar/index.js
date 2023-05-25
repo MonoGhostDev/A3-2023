@@ -12,27 +12,34 @@ import {
   NavbarLinkExtended,
   Button,
 } from "./styles";
-import LogoImg from "./BackgroundBee.png";
-
 import useAuth from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
   const [extendNavbar, setExtendNavbar] = useState(false);
   const { signout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isRhythmHive = location.pathname === "/home";
 
   return (
     <NavbarContainer extendNavbar={extendNavbar}>
       <NavbarInnerContainer>
         <LeftContainer>
           <NavbarLinkContainer>
-            <NavbarLink to="/home">RhythmHive</NavbarLink>
-            <NavbarLink to="/signup"> Registrar</NavbarLink>
-            <NavbarLink to="/signin"> Logar </NavbarLink>
+            {isRhythmHive ? (
+              <>
+                <NavbarLink to="/home">RhythmHive</NavbarLink>
+                <NavbarLink to="/signup">Registrar</NavbarLink>
+                <NavbarLink to="/signin">Logar</NavbarLink>
+              </>
+            ) : (
+              <NavbarLink to="/home">RhythmHive</NavbarLink>
+            )}
             <Button
               Text="Sair"
-              onClick={() => [signout(), navigate("/home")]}
+              onClick={() => [signout(), navigate("/signin")]}
             />
 
             <OpenLinksButton
@@ -44,15 +51,17 @@ function Navbar() {
             </OpenLinksButton>
           </NavbarLinkContainer>
         </LeftContainer>
-        <RightContainer>
-          <Logo src={LogoImg}></Logo>
-        </RightContainer>
+        <RightContainer></RightContainer>
       </NavbarInnerContainer>
       {extendNavbar && (
         <NavbarExtendedContainer>
-          <NavbarLinkExtended to="/"> Home </NavbarLinkExtended>
-          <NavbarLinkExtended to="/signup"> Registrar-se </NavbarLinkExtended>
-          <NavbarLinkExtended to="/signin"> Logar </NavbarLinkExtended>
+          <NavbarLinkExtended to="/"></NavbarLinkExtended>
+          {!isRhythmHive && (
+            <NavbarLinkExtended to="/signup">Registrar-se</NavbarLinkExtended>
+          )}
+          {!isRhythmHive && (
+            <NavbarLinkExtended to="/signin">Logar</NavbarLinkExtended>
+          )}
         </NavbarExtendedContainer>
       )}
     </NavbarContainer>
