@@ -120,6 +120,7 @@ const Home = () => {
               height: "50px",
               fontSize: "22px",
               borderRadius: "10px",
+              padding: "10px",
             }}
             onChange={(e) => [setArtista(e.target.value), setError("")]}
           />
@@ -132,6 +133,7 @@ const Home = () => {
               height: "50px",
               fontSize: "22px",
               borderRadius: "10px",
+              padding: "10px",
             }}
             onChange={(e) => [setMusica(e.target.value), setError("")]}
           />

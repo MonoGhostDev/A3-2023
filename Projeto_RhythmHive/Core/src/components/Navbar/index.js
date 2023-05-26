@@ -33,6 +33,7 @@ function Navbar() {
                 <NavbarLink to="/home">RhythmHive</NavbarLink>
                 <NavbarLink to="/signup">Registrar</NavbarLink>
                 <NavbarLink to="/signin">Logar</NavbarLink>
+                <NavbarLink to="/about">Sobre Nós</NavbarLink>
               </>
             ) : (
               <NavbarLink to="/home">RhythmHive</NavbarLink>
