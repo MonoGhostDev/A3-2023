@@ -4,7 +4,7 @@ import Button from "../../components/Button";
 import * as C from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import BackgroundImage from "./BackgroundBee.png";
+import BackgroundImage from "./BackgroundBee.JPG";
 
 const labelStyle = {
   color: "white",
@@ -46,7 +46,7 @@ const Signup = () => {
     justifyContent: "center",
     minHeight: "100vh",
     background: `linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), url(${BackgroundImage})`,
-    backgroundSize: "contain",
+    backgroundSize: "cover",
     backgroundPosition: "center",
   };
 

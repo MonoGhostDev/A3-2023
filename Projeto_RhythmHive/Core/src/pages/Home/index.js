@@ -146,7 +146,7 @@ const Home = () => {
             Text="Sair"
             onClick={() => {
               signout();
-              navigate("/");
+              navigate("/signin");
             }}
           />
         </C.Container>
